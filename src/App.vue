@@ -1,67 +1,52 @@
 <script setup>
 import { ref, computed } from "vue";
 
+// Notas musicais
+const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+// Padrões das escalas
+const majorScalePattern = [2, 2, 1, 2, 2, 2, 1]; // Maior (T-T-S-T-T-T-S)
+const minorScalePattern = [2, 1, 2, 2, 1, 2, 2]; // Menor Natural (T-S-T-T-S-T-T)
+
+// Mapeamento de transposição para Sax Alto (terça menor acima)
 const transpositionMap = {
   "C": "A", "C#": "A#", "Db": "A#", "D": "B", "D#": "C", "Eb": "C", "E": "C#", 
   "F": "D", "F#": "D#", "Gb": "D#", "G": "E", "G#": "F", "Ab": "F", "A": "F#", 
   "A#": "G", "Bb": "G", "B": "G#"
 };
 
-const majorScales = {
-  A: ["A", "B", "C#", "D", "E", "F#", "G#"],
-  Bb: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-  B: ["B", "C#", "D#", "E", "F#", "G#", "A#"],
-  C: ["C", "D", "E", "F", "G", "A", "B"],
-  Db: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-  D: ["D", "E", "F#", "G", "A", "B", "C#"],
-  Eb: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-  E: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-  F: ["F", "G", "A", "Bb", "C", "D", "E"],
-  Gb: ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
-  G: ["G", "A", "B", "C", "D", "E", "F#"],
-  Ab: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"]
-};
-
-const minorScales = {
-  A: ["A", "B", "C", "D", "E", "F", "G"],
-  Bb: ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
-  B: ["B", "C#", "D", "E", "F#", "G", "A"],
-  C: ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-  CSus: ["C#", "D#", "E", "F#", "G#", "A", "B"],
-  D: ["D", "E", "F", "G", "A", "Bb", "C"],
-  Eb: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"],
-  E: ["E", "F#", "G", "A", "B", "C", "D"],
-  F: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-  FSus: ["F#", "G#", "A", "B", "C#", "D", "E"],
-  G: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-  Ab: ["Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"]
-};
-
-
+// Tonalidade e tipo de escala selecionados pelo usuário
 const inputKey = ref("C");
 const scaleType = ref("major");
 
-const transposedKey = computed(() => {
-  const transposed = transpositionMap[inputKey.value];
-  if (!transposed) {
-    return "Desconhecido";
-  }
+// Obtém o tom transposto
+const transposedKey = computed(() => transpositionMap[inputKey.value] || "Desconhecido");
 
-  if (scaleType.value === "minor") {
-    return transposed + "m";
-  }
+// Função para calcular escalas dinamicamente
+function getScale(root, pattern) {
+  let scale = [];
+  let index = notes.indexOf(root);
+  if (index === -1) return [];
+  
+  pattern.forEach(step => {
+    scale.push(notes[index % notes.length]);
+    index += step;
+  });
+  return scale;
+}
 
-  return transposed;
-});
+// Obtém a escala transposta
 const transposedScale = computed(() => {
-  return scaleType.value === "major" ? majorScales[transposedKey.value] : minorScales[transposedKey.value];
+  return scaleType.value === "major"
+    ? getScale(transposedKey.value, majorScalePattern)
+    : getScale(transposedKey.value, minorScalePattern);
 });
 </script>
 
 <template>
   <div class="container">
     <h1>🎷 Transposição para Sax Alto</h1>
-
+    
     <div class="input-group">
       <label for="tonalidade">Tom da Música:</label>
       <select id="tonalidade" v-model="inputKey">
@@ -72,8 +57,8 @@ const transposedScale = computed(() => {
     </div>
 
     <div class="input-group">
-      <label for="escala">Tipo de Escala:</label>
-      <select id="escala" v-model="scaleType">
+      <label for="scaleType">Tipo de Escala:</label>
+      <select id="scaleType" v-model="scaleType">
         <option value="major">Maior</option>
         <option value="minor">Menor</option>
       </select>
@@ -81,23 +66,8 @@ const transposedScale = computed(() => {
 
     <div class="result">
       <h2>Sax Alto: <span>{{ transposedKey }}</span></h2>
-      <h3>Escala: <span>{{ transposedScale.join(" - ") }}</span></h3>
+      <h3>Escala {{ scaleType === "major" ? "Maior" : "Menor" }}: <span>{{ transposedScale.join(" - ") }}</span></h3>
     </div>
-  </div>
-  <div class="majors">
-    <h1>Escalas maiores</h1>
-    <p>Do</p>
-    <p>Sol ---- Sol La Si Do Re Mi Fa#</p>
-    <p>Re ----- Re Mi Fa# Sol La Si Do#</p>
-    <p>La ----- La Si Do# Re Mi Fa# Sol#</p>
-    <p>Mi ----- Mi Fa# Sol# La Si Do# Re#</p>
-    <p>Si ----- Si Do# Re# Mi Fa# Sol# La#</p>
-    <p>Fa# ---- Fa# Sol# La# Si Do# Re# Mi#</p>
-    <p>Do# ---- Do# Re# Mi# Fa# Sol# La# Si#</p>
-    <p>Fa ----- Fa Sol La Sib Do Re Mi</p>
-    <p>Sib ---- Sib Do Re Mib Fa Sol La</p>
-    <p>Mib ---- Mib Fa Sol Lab Sib Do Re Mib</p>
-    <p>Lab ---- Lab Sib Do Reb Mib Fa Sol Lab</p>
   </div>
 </template>
 
@@ -111,14 +81,6 @@ const transposedScale = computed(() => {
   background: #d19a76;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.majors {
-  max-width: 500px;
-  margin: auto;
-  text-align: left;
-  font-family: Arial, sans-serif;
-  padding: 20px;
 }
 
 h1 {
