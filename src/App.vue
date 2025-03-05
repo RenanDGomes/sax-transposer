@@ -1,14 +1,12 @@
 <script setup>
 import { ref, computed } from "vue";
 
-// Mapeamento das transposições para Sax Alto (E♭)
 const transpositionMap = {
   "C": "A", "C#": "A#", "Db": "A#", "D": "B", "D#": "C", "Eb": "C", "E": "C#", 
   "F": "D", "F#": "D#", "Gb": "D#", "G": "E", "G#": "F", "Ab": "F", "A": "F#", 
   "A#": "G", "Bb": "G", "B": "G#"
 };
 
-// Escalas maiores (Notação convencional)
 const majorScales = {
   A: ["A", "B", "C#", "D", "E", "F#", "G#"],
   Bb: ["Bb", "C", "D", "Eb", "F", "G", "A"],
@@ -19,12 +17,11 @@ const majorScales = {
   Eb: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
   E: ["E", "F#", "G#", "A", "B", "C#", "D#"],
   F: ["F", "G", "A", "Bb", "C", "D", "E"],
-  Gb: ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"], // "Cb" representa B na armadura de clave
+  Gb: ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
   G: ["G", "A", "B", "C", "D", "E", "F#"],
   Ab: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"]
 };
 
-// Escalas menores (Notação convencional)
 const minorScales = {
   A: ["A", "B", "C", "D", "E", "F", "G"],
   Bb: ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
@@ -32,23 +29,30 @@ const minorScales = {
   C: ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
   CSus: ["C#", "D#", "E", "F#", "G#", "A", "B"],
   D: ["D", "E", "F", "G", "A", "Bb", "C"],
-  Eb: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"], // "Cb" representa B na armadura de clave
+  Eb: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"],
   E: ["E", "F#", "G", "A", "B", "C", "D"],
   F: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
   FSus: ["F#", "G#", "A", "B", "C#", "D", "E"],
   G: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-  Ab: ["Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"] // "Cb" = B e "Fb" = E
+  Ab: ["Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"]
 };
 
 
-// Estado da tonalidade e tipo de escala
 const inputKey = ref("C");
 const scaleType = ref("major");
 
-// Cálculo do tom transposto
-const transposedKey = computed(() => transpositionMap[inputKey.value] || "Desconhecido");
+const transposedKey = computed(() => {
+  const transposed = transpositionMap[inputKey.value];
+  if (!transposed) {
+    return "Desconhecido";
+  }
 
-// Obtém a escala correta (maior ou menor)
+  if (scaleType.value === "minor") {
+    return transposed + "m";
+  }
+
+  return transposed;
+});
 const transposedScale = computed(() => {
   return scaleType.value === "major" ? majorScales[transposedKey.value] : minorScales[transposedKey.value];
 });
