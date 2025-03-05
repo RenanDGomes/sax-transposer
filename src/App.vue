@@ -85,7 +85,7 @@ const transposedScale = computed(() => {
     </div>
   </div>
   <div class="majors">
-    <h1>Escalas maiores Sustenidas</h1>
+    <h1>Escalas maiores</h1>
     <p>Do</p>
     <p>Sol ---- Sol La Si Do Re Mi Fa#</p>
     <p>Re ----- Re Mi Fa# Sol La Si Do#</p>
