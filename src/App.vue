@@ -30,12 +30,12 @@ const minorScales = {
   Bb: ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
   B: ["B", "C#", "D", "E", "F#", "G", "A"],
   C: ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-  C#: ["C#", "D#", "E", "F#", "G#", "A", "B"],
+  CSus: ["C#", "D#", "E", "F#", "G#", "A", "B"],
   D: ["D", "E", "F", "G", "A", "Bb", "C"],
   Eb: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"], // "Cb" representa B na armadura de clave
   E: ["E", "F#", "G", "A", "B", "C", "D"],
   F: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-  F#: ["F#", "G#", "A", "B", "C#", "D", "E"],
+  FSus: ["F#", "G#", "A", "B", "C#", "D", "E"],
   G: ["G", "A", "Bb", "C", "D", "Eb", "F"],
   Ab: ["Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb"] // "Cb" = B e "Fb" = E
 };
